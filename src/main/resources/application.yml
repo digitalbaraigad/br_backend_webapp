@@ -1,0 +1,9 @@
+whatsapp:
+  api-url: ${WHATSAPP_API_URL:https://graph.facebook.com/v23.0/1137680139432819/messages}
+  access-token: ${WHATSAPP_ACCESS_TOKEN:}
+
+spring:
+  task:
+    scheduling:
+      pool:
+        size: ${SCHEDULER_POOL_SIZE:5}

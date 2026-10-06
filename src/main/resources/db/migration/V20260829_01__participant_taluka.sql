@@ -1,0 +1,2 @@
+ALTER TABLE participants
+    ADD COLUMN IF NOT EXISTS taluka VARCHAR(255);
