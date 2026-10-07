@@ -28,3 +28,11 @@ jobs:
 
       - name: Build backend
         run: ./mvnw -B -DskipTests package
+
+      - name: Upload backend JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: baraigad-backend-jar
+          path: target/baraigadWebApp-*.jar
+          if-no-files-found: error
+          retention-days: 30
