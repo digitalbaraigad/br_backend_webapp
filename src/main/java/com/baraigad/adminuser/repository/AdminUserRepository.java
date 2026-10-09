@@ -24,4 +24,6 @@ public interface AdminUserRepository extends JpaRepository<AdminUser, String> {
     boolean existsByUserIdAndDelFlgFalse(
             String userId);
 
+    boolean existsByUserRoleAndDelFlgFalse(String userRole);
+
 }

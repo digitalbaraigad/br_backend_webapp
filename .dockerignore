@@ -1,0 +1,7 @@
+target
+.git
+.idea
+.env
+uploads
+logs
+backend-runtime*.log
