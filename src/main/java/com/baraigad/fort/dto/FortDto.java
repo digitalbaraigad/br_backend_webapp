@@ -14,10 +14,11 @@ public class FortDto {
     private Long fortId;
     private String fortName;
     private String district;
+    private String districtMr;
     private String state;
     private Double elevation;
-    private Double latitude;
-    private Double longitude;
+    private String latitude;
+    private String longitude;
     private String descriptionEn;
     private String descriptionMr;
     private String fortTitleEn;

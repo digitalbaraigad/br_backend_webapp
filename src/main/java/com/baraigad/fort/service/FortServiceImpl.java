@@ -76,6 +76,7 @@ public class FortServiceImpl implements FortService {
 
         fort.setFortName(fortDto.getFortName());
         fort.setDistrict(fortDto.getDistrict());
+        fort.setDistrictMr(fortDto.getDistrictMr());
         fort.setState(fortDto.getState());
         fort.setElevation(fortDto.getElevation());
         fort.setLatitude(fortDto.getLatitude());

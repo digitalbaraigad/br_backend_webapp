@@ -26,6 +26,9 @@ public class Fort extends BaseEntity {
     @Column(name = "district")
     private String district;
 
+    @Column(name = "district_mr")
+    private String districtMr;
+
     @Column(name = "state")
     private String state;
 
@@ -33,10 +36,10 @@ public class Fort extends BaseEntity {
     private Double elevation;
 
     @Column(name = "latitude")
-    private Double latitude;
+    private String latitude;
 
     @Column(name = "longitude")
-    private Double longitude;
+    private String longitude;
 
     @Column(name = "description_en", columnDefinition = "TEXT")
     private String descriptionEn;
