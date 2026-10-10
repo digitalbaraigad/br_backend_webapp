@@ -6,9 +6,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class WorkBannerStorageService {
+    private static final Logger log = LoggerFactory.getLogger(WorkBannerStorageService.class);
     private final Path directory;
     public WorkBannerStorageService(@Value("${baraigad.work-banner.upload-dir:uploads/work-banners}") String uploadDirectory) {
         directory = Path.of(uploadDirectory).toAbsolutePath().normalize();
@@ -28,5 +31,17 @@ public class WorkBannerStorageService {
             try (var input = file.getInputStream()) { Files.copy(input, target, StandardCopyOption.REPLACE_EXISTING); }
             return "/uploads/work-banners/" + fileName;
         } catch (IOException exception) { throw new IllegalStateException("Banner image could not be stored.", exception); }
+    }
+
+    public void delete(String imageUrl) {
+        if (imageUrl == null || !imageUrl.startsWith("/uploads/work-banners/")) return;
+        try {
+            String fileName = Path.of(imageUrl).getFileName().toString();
+            Path target = directory.resolve(fileName).normalize();
+            if (!target.startsWith(directory)) throw new IllegalArgumentException("Invalid banner file name.");
+            if (Files.deleteIfExists(target)) log.info("Removed work banner file {}", fileName);
+        } catch (IOException exception) {
+            log.warn("Could not remove work banner file for {}", imageUrl, exception);
+        }
     }
 }
