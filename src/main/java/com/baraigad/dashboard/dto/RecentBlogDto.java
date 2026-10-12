@@ -23,5 +23,7 @@ public class RecentBlogDto {
 
     private Long coverMediaId;
 
+    private String coverImageUrl;
+
     private String publishDate;
 }

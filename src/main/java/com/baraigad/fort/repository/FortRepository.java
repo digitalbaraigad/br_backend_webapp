@@ -12,6 +12,6 @@ public interface FortRepository extends JpaRepository<Fort, Long> {
     //List<Fort> findByDelFlgFalse();
     Page<Fort> findByDelFlgFalse(Pageable pageable);
     Long countByDelFlgFalse();
-    List<Fort>  findTop4ByDelFlgFalseAndStatusTrueOrderByCreatedDateDesc();
+    List<Fort> findTop3ByDelFlgFalseAndStatusTrueOrderByCreatedDateDesc();
 
 }

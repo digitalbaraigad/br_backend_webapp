@@ -19,7 +19,11 @@ public class FeaturedFortDto {
 
     private String district;
 
+    private String districtMr;
+
     private String state;
 
     private Long coverMediaId;
+
+    private String coverImageUrl;
 }

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -82,7 +83,10 @@ public class BlogServiceImpl
         Pageable pageable =
                 PageRequest.of(
                         pageNo - 1,
-                        pageSize);
+                        pageSize,
+                        Sort.by(
+                                Sort.Order.desc("publishDate"),
+                                Sort.Order.desc("createdDate")));
 
         Page<Blog> blogPage =
                 blogRepository

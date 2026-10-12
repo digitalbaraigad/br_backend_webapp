@@ -90,7 +90,7 @@ public class DashboardServiceImpl
 
         List<FeaturedFortDto> featuredForts =
                 fortRepository
-                        .findTop4ByDelFlgFalseAndStatusTrueOrderByCreatedDateDesc()
+                        .findTop3ByDelFlgFalseAndStatusTrueOrderByCreatedDateDesc()
                         .stream()
                         .map(this::mapFort)
                         .toList();
@@ -114,6 +114,7 @@ public class DashboardServiceImpl
                 .blogSlug(blog.getBlogSlug())
                 .blogAuthor(blog.getBlogAuthor())
                 .coverMediaId(blog.getCoverMediaId())
+                .coverImageUrl(blog.getCoverImageUrl())
                 .publishDate(
                         blog.getPublishDate() != null
                                 ? blog.getPublishDate().toString()
@@ -137,6 +138,7 @@ public class DashboardServiceImpl
                         mohim.getEndDate() != null
                                 ? mohim.getEndDate().toString()
                                 : null)
+                .photoUrls(mohim.getPhotoUrls())
                 .build();
     }
 
@@ -171,8 +173,14 @@ public class DashboardServiceImpl
                 .fortId(fort.getFortId())
                 .fortName(fort.getFortName())
                 .district(fort.getDistrict())
+                .districtMr(fort.getDistrictMr())
                 .state(fort.getState())
                 .coverMediaId(fort.getCoverMediaId())
+                .coverImageUrl(fort.getMediaUrls().stream()
+                        .filter(url -> url != null)
+                        .filter(url -> !url.matches("(?i).*\\.(mp4|webm|mov)(\\?.*)?$"))
+                        .findFirst()
+                        .orElse(null))
                 .build();
     }
 }
