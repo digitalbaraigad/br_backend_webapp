@@ -29,5 +29,7 @@ public class UpcomingMohimDto {
 
     private String endDate;
 
+    private String cardImageUrl;
+
     private List<String> photoUrls;
 }

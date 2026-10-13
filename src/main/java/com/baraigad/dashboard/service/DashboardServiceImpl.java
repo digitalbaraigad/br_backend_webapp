@@ -138,6 +138,7 @@ public class DashboardServiceImpl
                         mohim.getEndDate() != null
                                 ? mohim.getEndDate().toString()
                                 : null)
+                .cardImageUrl(mohim.getCardImageUrl())
                 .photoUrls(mohim.getPhotoUrls())
                 .build();
     }

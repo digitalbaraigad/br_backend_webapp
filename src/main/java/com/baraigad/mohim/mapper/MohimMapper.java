@@ -38,6 +38,7 @@ public class MohimMapper {
         dto.setDifficulty(mohim.getDifficulty());
         dto.setDifficultyMr(mohim.getDifficultyMr());
         dto.setWhatsappGroupLink(mohim.getWhatsappGroupLink());
+        dto.setCardImageUrl(mohim.getCardImageUrl());
         dto.setPhotoUrls(new ArrayList<>(mohim.getPhotoUrls()));
         dto.setStatus(mohim.getStatus());
 
@@ -73,6 +74,7 @@ public class MohimMapper {
         mohim.setDifficulty(dto.getDifficulty());
         mohim.setDifficultyMr(dto.getDifficultyMr());
         mohim.setWhatsappGroupLink(dto.getWhatsappGroupLink());
+        mohim.setCardImageUrl(dto.getCardImageUrl());
         mohim.setPhotoUrls(dto.getPhotoUrls() == null ? new ArrayList<>() : new ArrayList<>(dto.getPhotoUrls()));
         mohim.setStatus(dto.getStatus());
 

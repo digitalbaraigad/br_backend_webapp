@@ -100,6 +100,10 @@ public class Mohim {
     @Column(name = "whatsapp_group_link", length = 2048)
     private String whatsappGroupLink;
 
+    /** Optional landscape thumbnail used only on compact upcoming-event cards. */
+    @Column(name = "card_image_url", length = 2048)
+    private String cardImageUrl;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "mohim_photo_urls", joinColumns = @JoinColumn(name = "mohim_id"))
     @OrderColumn(name = "display_order")

@@ -53,6 +53,9 @@ public class MohimDto {
     @Pattern(regexp = "^$|https?://.+", message = "WhatsApp Group Link must be a valid http or https URL")
     private String whatsappGroupLink;
 
+    /** Optional compact card thumbnail; gallery images remain full-size. */
+    private String cardImageUrl;
+
     /** Ordered public image URLs for the Mohim / Event photo slider. */
     private List<String> photoUrls = new ArrayList<>();
 

@@ -22,6 +22,8 @@ public interface MohimService {
 
     MohimDto addPhotoUrls(Long mohimId, List<String> photoUrls);
 
+    MohimDto updateCardImage(Long mohimId, String cardImageUrl);
+
     void deleteMohim(
             Long mohimId);
 }

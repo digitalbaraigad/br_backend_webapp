@@ -150,6 +150,7 @@ public class MohimServiceImpl implements MohimService {
         mohim.setDifficulty(dto.getDifficulty());
         mohim.setDifficultyMr(dto.getDifficultyMr());
         mohim.setWhatsappGroupLink(dto.getWhatsappGroupLink());
+        mohim.setCardImageUrl(dto.getCardImageUrl());
         mohim.setPhotoUrls(dto.getPhotoUrls() == null ? new ArrayList<>() : new ArrayList<>(dto.getPhotoUrls()));
         mohim.setStatus(dto.getStatus());
 
@@ -172,6 +173,15 @@ public class MohimServiceImpl implements MohimService {
                 .filter(url -> url != null && !url.isBlank())
                 .toList());
         mohim.setPhotoUrls(existing);
+        mohim.setUpdatedDate(LocalDateTime.now());
+        return MohimMapper.mapToDto(mohimRepository.save(mohim));
+    }
+
+    @Override
+    public MohimDto updateCardImage(Long mohimId, String cardImageUrl) {
+        Mohim mohim = mohimRepository.findByMohimIdAndDelFlgFalse(mohimId)
+                .orElseThrow(() -> new ResourceNotFoundException("Mohim not found"));
+        mohim.setCardImageUrl(cardImageUrl);
         mohim.setUpdatedDate(LocalDateTime.now());
         return MohimMapper.mapToDto(mohimRepository.save(mohim));
     }

@@ -84,6 +84,15 @@ public class MohimController {
                 mohimService.addPhotoUrls(mohimId, mohimImageStorageService.storeAll(images)));
     }
 
+    @PostMapping(value = "/{mohimId}/card-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<MohimDto>> uploadCardImage(
+            @PathVariable Long mohimId,
+            @RequestParam("image") MultipartFile image) {
+        return ResponseUtil.success(
+                "Mohim card image uploaded successfully",
+                mohimService.updateCardImage(mohimId, mohimImageStorageService.storeAll(List.of(image)).get(0)));
+    }
+
     @DeleteMapping("/{mohimId}")
     public ResponseEntity<ApiResponse<Object>>
     deleteMohim(
