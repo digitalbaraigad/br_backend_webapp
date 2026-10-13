@@ -8,6 +8,7 @@ import com.baraigad.dynamicform.entity.DynamicForm;
 import com.baraigad.dynamicform.entity.DynamicFormSubmission;
 import com.baraigad.dynamicform.repository.DynamicFormRepository;
 import com.baraigad.dynamicform.repository.DynamicFormSubmissionRepository;
+import com.baraigad.notification.service.RegistrationNotificationService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class DynamicFormServiceImpl implements DynamicFormService {
     private final DynamicFormRepository formRepository;
     private final DynamicFormSubmissionRepository submissionRepository;
     private final ObjectMapper objectMapper;
+    private final RegistrationNotificationService registrationNotificationService;
 
     @Override public DynamicFormDto create(DynamicFormDto dto) {
         DynamicForm form = new DynamicForm();
@@ -59,7 +61,9 @@ public class DynamicFormServiceImpl implements DynamicFormService {
         DynamicFormSubmission submission = new DynamicFormSubmission();
         submission.setFormId(form.getFormId()); submission.setResponsesJson(write(request.getResponses()));
         submission.setConsentAccepted(request.isConsentAccepted()); submission.setSubmittedAt(LocalDateTime.now());
-        return toSubmissionDto(submissionRepository.save(submission));
+        DynamicFormSubmission savedSubmission = submissionRepository.save(submission);
+        registrationNotificationService.notifyDynamicFormSubmission(form, fields, request.getResponses());
+        return toSubmissionDto(savedSubmission);
     }
     @Override @Transactional(readOnly = true) public List<DynamicFormSubmissionDto> getSubmissions(Long formId) {
         if (!formRepository.existsById(formId)) throw new ResourceNotFoundException("Form not found");

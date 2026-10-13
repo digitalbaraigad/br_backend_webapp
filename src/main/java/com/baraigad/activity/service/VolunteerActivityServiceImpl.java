@@ -13,6 +13,7 @@ import com.baraigad.common.exception.ResourceNotFoundException;
 import com.baraigad.volunteer.entity.Volunteer;
 import com.baraigad.volunteer.mapper.VolunteerMapper;
 import com.baraigad.volunteer.repository.VolunteerRepository;
+import com.baraigad.notification.service.RegistrationNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class VolunteerActivityServiceImpl
     private final VolunteerRepository volunteerRepository;
     private final ActivityMasterRepository activityRepository;
     private final VolunteerActivityRegistrationRepository registrationRepository;
+    private final RegistrationNotificationService registrationNotificationService;
 
     @Override
     public void registerVolunteer(
@@ -66,6 +68,9 @@ public class VolunteerActivityServiceImpl
         registration.setRemarks(request.getRemarks());
 
         registrationRepository.save(registration);
+        if (ActivityType.MOHIM.equals(activity.getActivityType())) {
+            registrationNotificationService.notifyMohimRegistration(volunteer, activity);
+        }
     }
 
 

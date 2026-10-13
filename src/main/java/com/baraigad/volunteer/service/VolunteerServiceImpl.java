@@ -8,6 +8,7 @@ import com.baraigad.volunteer.dto.VolunteerDto;
 import com.baraigad.volunteer.entity.Volunteer;
 import com.baraigad.volunteer.mapper.VolunteerMapper;
 import com.baraigad.volunteer.repository.VolunteerRepository;
+import com.baraigad.notification.service.RegistrationNotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +23,7 @@ import java.util.List;
 public class VolunteerServiceImpl implements VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
+    private final RegistrationNotificationService registrationNotificationService;
 
     @Override
     public VolunteerDto createVolunteer(VolunteerDto volunteerDto) {
@@ -37,6 +39,7 @@ public class VolunteerServiceImpl implements VolunteerService {
         volunteer.setDelFlg(false);
 
         Volunteer savedVolunteer = volunteerRepository.save(volunteer);
+        registrationNotificationService.notifyVolunteerRegistration(savedVolunteer);
 
         return VolunteerMapper.mapToDto(savedVolunteer);
     }
