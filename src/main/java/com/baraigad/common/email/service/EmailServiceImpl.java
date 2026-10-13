@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Service;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     @Override
     public void sendHtmlEmail(
@@ -36,7 +40,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setText(htmlContent, true);
 
             helper.setFrom(
-                    "digitalbaraigad@gmail.com",
+                    fromEmail,
                     "BaRaigad Team");
 
             mailSender.send(message);
