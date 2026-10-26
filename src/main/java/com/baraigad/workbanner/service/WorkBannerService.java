@@ -13,7 +13,10 @@ import java.util.List;
 public class WorkBannerService {
     private final WorkBannerRepository repository;
     private final WorkBannerStorageService storage;
-    private static final List<String> PAGES = List.of("about", "social", "environment", "donation", "donation-en", "donation-mr", "community");
+    private static final List<String> PAGES = List.of(
+            "about", "social", "environment", "trekking", "ceremonies", "adventure",
+            "donation", "donation-en", "donation-mr", "community"
+    );
     public List<WorkBannerDto> get(String pageKey) { return repository.findByPageKeyOrderByDisplayOrderAscBannerIdAsc(valid(pageKey)).stream().map(this::dto).toList(); }
     @Transactional
     public List<WorkBannerDto> add(String pageKey, List<String> urls) {
@@ -43,6 +46,6 @@ public class WorkBannerService {
         repository.delete(banner);
         storage.delete(banner.getImageUrl());
     }
-    private String valid(String pageKey) { String page = pageKey == null ? "" : pageKey.trim().toLowerCase(); if (!PAGES.contains(page)) throw new IllegalArgumentException("Banner page must be about, social, environment, donation, donation-en, donation-mr or community."); return page; }
+    private String valid(String pageKey) { String page = pageKey == null ? "" : pageKey.trim().toLowerCase(); if (!PAGES.contains(page)) throw new IllegalArgumentException("Banner page must be about, social, environment, trekking, ceremonies, adventure, donation, donation-en, donation-mr or community."); return page; }
     private WorkBannerDto dto(WorkBanner banner) { return WorkBannerDto.builder().bannerId(banner.getBannerId()).pageKey(banner.getPageKey()).imageUrl(banner.getImageUrl()).displayOrder(banner.getDisplayOrder()).build(); }
 }

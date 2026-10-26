@@ -17,6 +17,8 @@ public class FeaturedFortDto {
 
     private String fortName;
 
+    private String fortNameMr;
+
     private String district;
 
     private String districtMr;

@@ -4,7 +4,10 @@ import com.baraigad.whatsapp.service.WhatsAppService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/whatsapp")
@@ -14,13 +17,10 @@ public class WhatsAppController {
     private final WhatsAppService whatsappService;
 
     @GetMapping("/test")
-    public String testWhatsApp() {
+    public String testWhatsApp(@RequestParam String mobileNo) {
 
-        whatsappService.sendMessage(
-                "919503777850",
-                "Hello Vinod, WhatsApp API is integrated successfully 🚩"
-        );
+        whatsappService.sendTemplate(mobileNo, "hello_world", "en_US", Map.of());
 
-        return "WhatsApp Message Sent Successfully";
+        return "WhatsApp hello_world template submitted successfully";
     }
 }

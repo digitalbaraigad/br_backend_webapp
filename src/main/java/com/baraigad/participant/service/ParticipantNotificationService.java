@@ -10,6 +10,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -34,6 +37,10 @@ public class ParticipantNotificationService {
     private String emailTemplate;
     @Value("${baraigad.participant-notification.whatsapp-template}")
     private String whatsAppTemplate;
+    @Value("${baraigad.participant-notification.whatsapp-template-name:join_us_confirmation}")
+    private String whatsAppTemplateName;
+    @Value("${baraigad.participant-notification.whatsapp-template-language:mr}")
+    private String whatsAppTemplateLanguage;
 
     /** Sends confirmation to the participant unless a configured team recipient overrides it. */
     @Async
@@ -48,7 +55,7 @@ public class ParticipantNotificationService {
         if (whatsAppEnabled) {
             sendWhatsApp(
                     StringUtils.hasText(configuredWhatsAppRecipient) ? configuredWhatsAppRecipient.trim() : participant.getMobileNumber(),
-                    render(whatsAppTemplate, participant));
+                    templateParameters(participant));
         }
     }
 
@@ -61,13 +68,23 @@ public class ParticipantNotificationService {
         }
     }
 
-    private void sendWhatsApp(String recipient, String message) {
+    private void sendWhatsApp(String recipient, Map<String, String> parameters) {
         if (!StringUtils.hasText(recipient)) return;
         try {
-            whatsAppService.sendMessage(recipient.replaceAll("\\D", ""), message);
+            whatsAppService.sendTemplate(recipient.replaceAll("\\D", ""), whatsAppTemplateName, whatsAppTemplateLanguage, parameters);
         } catch (Exception exception) {
             log.warn("Participant notification WhatsApp message could not be sent to {}", recipient, exception);
         }
+    }
+
+    private Map<String, String> templateParameters(Participant participant) {
+        Map<String, String> values = new LinkedHashMap<>();
+        values.put("name", (safe(participant.getName()) + " " + safe(participant.getSurname())).trim());
+        values.put("interest", safe(participant.getInterestedActivity()));
+        values.put("district", safe(participant.getDistrict()));
+        values.put("taluka", safe(participant.getTaluka()));
+        values.put("mobile", safe(participant.getMobileNumber()));
+        return values;
     }
 
     private String render(String template, Participant participant) {

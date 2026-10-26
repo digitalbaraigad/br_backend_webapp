@@ -42,6 +42,8 @@ public class BirthdayEmailServiceImpl implements BirthdayEmailService {
     @Value("${baraigad.birthday-notification.email-subject:Happy Birthday from Ba Raigad Parivar}") private String emailSubject;
     @Value("${baraigad.birthday-notification.email-template:Dear {name},<br/><br/>Wishing you a very happy birthday!<br/><br/>Ba Raigad Parivar}") private String emailTemplate;
     @Value("${baraigad.birthday-notification.whatsapp-template:Dear {name}, Happy Birthday from Ba Raigad Parivar!}") private String whatsAppTemplate;
+    @Value("${baraigad.birthday-notification.whatsapp-template-name:birthday_wishes_mr}") private String whatsAppTemplateName;
+    @Value("${baraigad.birthday-notification.whatsapp-template-language:mr}") private String whatsAppTemplateLanguage;
 
     @Override
     @Transactional(readOnly = true)
@@ -55,7 +57,7 @@ public class BirthdayEmailServiceImpl implements BirthdayEmailService {
                 catch (Exception exception) { log.warn("Birthday email could not be sent to {}.", recipient.email(), exception); }
             }
             if (whatsAppEnabled && StringUtils.hasText(recipient.mobile())) {
-                try { whatsAppService.sendMessage(recipient.mobile(), render(whatsAppTemplate, recipient)); }
+                try { whatsAppService.sendTemplate(recipient.mobile(), whatsAppTemplateName, whatsAppTemplateLanguage, Map.of("name", recipient.name())); }
                 catch (Exception exception) { log.warn("Birthday WhatsApp message could not be sent to {}.", recipient.mobile(), exception); }
             }
         }

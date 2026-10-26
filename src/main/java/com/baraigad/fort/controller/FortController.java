@@ -8,6 +8,7 @@ import com.baraigad.fort.entity.Fort;
 import com.baraigad.fort.mapper.FortMapper;
 import com.baraigad.fort.repository.FortRepository;
 import com.baraigad.fort.service.FortService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +31,7 @@ public class FortController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<FortDto>> createFort(
-            @RequestBody FortDto fortDto) {
+            @Valid @RequestBody FortDto fortDto) {
 
         return ResponseUtil.success(
                 Constants.FORT_CREATED_SUCCESSFULLY,
@@ -72,7 +73,7 @@ public class FortController {
     @PutMapping("/{fortId}")
     public ResponseEntity<ApiResponse<FortDto>> updateFort(
             @PathVariable Long fortId,
-            @RequestBody FortDto fortDto) {
+            @Valid @RequestBody FortDto fortDto) {
 
         FortDto updatedFort =
                 fortService.updateFort(fortId, fortDto);

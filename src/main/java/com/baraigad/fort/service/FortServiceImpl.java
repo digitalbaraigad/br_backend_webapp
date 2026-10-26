@@ -75,6 +75,7 @@ public class FortServiceImpl implements FortService {
                         new RuntimeException("Fort not found"));
 
         fort.setFortName(fortDto.getFortName());
+        fort.setFortNameMr(fortDto.getFortNameMr());
         fort.setDistrict(fortDto.getDistrict());
         fort.setDistrictMr(fortDto.getDistrictMr());
         fort.setState(fortDto.getState());

@@ -1,5 +1,6 @@
 package com.baraigad.fort.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,12 @@ import java.util.List;
 public class FortDto {
 
     private Long fortId;
+
+    @NotBlank(message = "Fort name (English) is required")
     private String fortName;
+
+    @NotBlank(message = "Fort name (Marathi) is required")
+    private String fortNameMr;
     private String district;
     private String districtMr;
     private String state;

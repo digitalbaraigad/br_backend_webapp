@@ -19,7 +19,7 @@ public class AdminMenuAccessService {
     public static final List<String> ADMIN_MENU_KEYS = List.of(
             "Volunteer", "Participants", "Contact Enquiries", "Dynamic Forms",
             "Volunteer Activity", "Our Work", "Work Banners", "Fort", "Mohim", "Gallery", "Blog",
-            "Documents", "Birthday Count", "Test Email");
+            "Documents", "Birthday Count", "Test Email", "Bulk Communication", "Fort Guide Management");
 
     private final AdminMenuAccessRepository accessRepository;
     private final AdminUserRepository userRepository;
@@ -82,6 +82,8 @@ public class AdminMenuAccessService {
     }
 
     private String menuForPath(String path) {
+        if (path.startsWith("/api/v1/fort-guides")) return "Fort Guide Management";
+        if (path.startsWith("/api/v1/trails")) return "Fort";
         if (path.startsWith("/api/v1/volunteer")) return "Volunteer";
         if (path.startsWith("/api/v1/participants")) return "Participants";
         if (path.startsWith("/api/v1/contact-enquiries")) return "Contact Enquiries";
@@ -96,6 +98,7 @@ public class AdminMenuAccessService {
         if (path.startsWith("/api/v1/document")) return "Documents";
         if (path.startsWith("/api/email/birthday/count")) return "Birthday Count";
         if (path.startsWith("/api/email/")) return "Test Email";
+        if (path.startsWith("/api/v1/bulk-communications")) return "Bulk Communication";
         return null;
     }
 }

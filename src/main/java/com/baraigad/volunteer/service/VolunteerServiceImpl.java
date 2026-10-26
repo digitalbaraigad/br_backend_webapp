@@ -30,12 +30,22 @@ public class VolunteerServiceImpl implements VolunteerService {
         String mobileNumber = normalizeMobileNumber(volunteerDto.getVolunteerMobile());
         volunteerDto.setVolunteerMobile(mobileNumber);
 
-        if (volunteerRepository.findByVolunteerMobile(mobileNumber).isPresent()) {
+        if (volunteerRepository.findByVolunteerMobileAndDelFlgFalse(mobileNumber).isPresent()) {
             throw new DuplicateResourceException(
                     "A volunteer is already registered with this mobile number");
         }
 
         Volunteer volunteer = VolunteerMapper.mapToEntity(volunteerDto);
+        volunteerRepository.findByVolunteerMobileAndDelFlg(mobileNumber, true)
+                .ifPresent(deletedVolunteer -> {
+                    // The mobile number has a database unique constraint. Reuse the
+                    // soft-deleted record so a volunteer can register again.
+                    volunteer.setVolunteerId(deletedVolunteer.getVolunteerId());
+                    if (volunteer.getVolunteerPassportPhotoUrl() == null
+                            || volunteer.getVolunteerPassportPhotoUrl().isBlank()) {
+                        volunteer.setVolunteerPassportPhotoUrl(deletedVolunteer.getVolunteerPassportPhotoUrl());
+                    }
+                });
         volunteer.setDelFlg(false);
 
         Volunteer savedVolunteer = volunteerRepository.save(volunteer);

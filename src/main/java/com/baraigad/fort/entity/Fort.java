@@ -23,6 +23,9 @@ public class Fort extends BaseEntity {
     @Column(name = "fort_name", nullable = false)
     private String fortName;
 
+    @Column(name = "fort_name_mr")
+    private String fortNameMr;
+
     @Column(name = "district")
     private String district;
 

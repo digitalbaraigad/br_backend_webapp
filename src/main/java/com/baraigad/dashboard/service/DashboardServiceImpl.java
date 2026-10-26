@@ -173,6 +173,7 @@ public class DashboardServiceImpl
         return FeaturedFortDto.builder()
                 .fortId(fort.getFortId())
                 .fortName(fort.getFortName())
+                .fortNameMr(fort.getFortNameMr())
                 .district(fort.getDistrict())
                 .districtMr(fort.getDistrictMr())
                 .state(fort.getState())

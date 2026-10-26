@@ -34,6 +34,8 @@ public class RegistrationNotificationService {
     @Value("${baraigad.volunteer-registration-notification.email-subject:Ba Raigad Parivar - Volunteer registration received}") private String volunteerEmailSubject;
     @Value("${baraigad.volunteer-registration-notification.email-template:Hello {name},<br/><br/>Thank you for registering as a volunteer with Ba Raigad Parivar.<br/><br/>Mobile: {mobile}<br/>District: {district}<br/>Taluka: {taluka}<br/><br/>Ba Raigad Parivar}") private String volunteerEmailTemplate;
     @Value("${baraigad.volunteer-registration-notification.whatsapp-template:Hello {name}, thank you for registering as a Ba Raigad Parivar volunteer.}") private String volunteerWhatsAppTemplate;
+    @Value("${baraigad.volunteer-registration-notification.whatsapp-template-name:volunteer_join}") private String volunteerWhatsAppTemplateName;
+    @Value("${baraigad.volunteer-registration-notification.whatsapp-template-language:mr}") private String volunteerWhatsAppTemplateLanguage;
 
     @Value("${baraigad.dynamic-form-submission-notification.enabled:true}") private boolean dynamicFormEnabled;
     @Value("${baraigad.dynamic-form-submission-notification.email-enabled:true}") private boolean dynamicFormEmailEnabled;
@@ -43,6 +45,8 @@ public class RegistrationNotificationService {
     @Value("${baraigad.dynamic-form-submission-notification.email-subject:Ba Raigad Parivar - {formTitle} submission received}") private String dynamicFormEmailSubject;
     @Value("${baraigad.dynamic-form-submission-notification.email-template:Hello {name},<br/><br/>We received your {formTitle} submission.<br/><br/>{details}<br/><br/>Ba Raigad Parivar}") private String dynamicFormEmailTemplate;
     @Value("${baraigad.dynamic-form-submission-notification.whatsapp-template:Hello {name}, we received your {formTitle} submission. Details:\n{details}") private String dynamicFormWhatsAppTemplate;
+    @Value("${baraigad.dynamic-form-submission-notification.whatsapp-template-name:dynamic_form}") private String dynamicFormWhatsAppTemplateName;
+    @Value("${baraigad.dynamic-form-submission-notification.whatsapp-template-language:mr}") private String dynamicFormWhatsAppTemplateLanguage;
 
     @Value("${baraigad.mohim-registration-notification.enabled:true}") private boolean mohimEnabled;
     @Value("${baraigad.mohim-registration-notification.email-enabled:true}") private boolean mohimEmailEnabled;
@@ -52,13 +56,16 @@ public class RegistrationNotificationService {
     @Value("${baraigad.mohim-registration-notification.email-subject:Ba Raigad Parivar - Mohim registration confirmed}") private String mohimEmailSubject;
     @Value("${baraigad.mohim-registration-notification.email-template:Hello {name},<br/><br/>Your registration for {activity} has been received.<br/><br/>Date: {date}<br/>Location: {location}<br/><br/>Ba Raigad Parivar}") private String mohimEmailTemplate;
     @Value("${baraigad.mohim-registration-notification.whatsapp-template:Hello {name}, your registration for {activity} has been received. Date: {date}. Location: {location}.}") private String mohimWhatsAppTemplate;
+    @Value("${baraigad.mohim-registration-notification.whatsapp-template-name:mohim_registration_confirmation}") private String mohimWhatsAppTemplateName;
+    @Value("${baraigad.mohim-registration-notification.whatsapp-template-language:mr}") private String mohimWhatsAppTemplateLanguage;
 
     @Async
     public void notifyVolunteerRegistration(Volunteer volunteer) {
         Map<String, String> values = volunteerValues(volunteer);
         notifyChannels("volunteer registration", volunteerEnabled, volunteerEmailEnabled, volunteerWhatsAppEnabled,
                 volunteerEmailTo, volunteerWhatsAppTo, values.get("email"), values.get("mobile"),
-                volunteerEmailSubject, volunteerEmailTemplate, volunteerWhatsAppTemplate, values);
+                volunteerEmailSubject, volunteerEmailTemplate, volunteerWhatsAppTemplate,
+                volunteerWhatsAppTemplateName, volunteerWhatsAppTemplateLanguage, values);
     }
 
     @Async
@@ -86,7 +93,8 @@ public class RegistrationNotificationService {
         htmlValues.replaceAll((key, value) -> "details".equals(key) ? htmlDetails.toString() : HtmlUtils.htmlEscape(value));
         notifyChannels("dynamic form submission", dynamicFormEnabled, dynamicFormEmailEnabled, dynamicFormWhatsAppEnabled,
                 dynamicFormEmailTo, dynamicFormWhatsAppTo, values.get("email"), values.get("mobile"),
-                dynamicFormEmailSubject, dynamicFormEmailTemplate, dynamicFormWhatsAppTemplate, values, htmlValues);
+                dynamicFormEmailSubject, dynamicFormEmailTemplate, dynamicFormWhatsAppTemplate,
+                dynamicFormWhatsAppTemplateName, dynamicFormWhatsAppTemplateLanguage, values, htmlValues);
     }
 
     @Async
@@ -97,21 +105,25 @@ public class RegistrationNotificationService {
         values.put("location", safe(activity.getLocation()));
         notifyChannels("mohim registration", mohimEnabled, mohimEmailEnabled, mohimWhatsAppEnabled,
                 mohimEmailTo, mohimWhatsAppTo, values.get("email"), values.get("mobile"),
-                mohimEmailSubject, mohimEmailTemplate, mohimWhatsAppTemplate, values);
+                mohimEmailSubject, mohimEmailTemplate, mohimWhatsAppTemplate,
+                mohimWhatsAppTemplateName, mohimWhatsAppTemplateLanguage, values);
     }
 
     private void notifyChannels(String event, boolean enabled, boolean emailEnabled, boolean whatsAppEnabled,
             String configuredEmail, String configuredWhatsApp, String fallbackEmail, String fallbackMobile,
-            String emailSubject, String emailTemplate, String whatsAppTemplate, Map<String, String> values) {
+            String emailSubject, String emailTemplate, String whatsAppTemplate, String whatsAppTemplateName,
+            String whatsAppTemplateLanguage, Map<String, String> values) {
         Map<String, String> htmlValues = new LinkedHashMap<>(values);
         htmlValues.replaceAll((key, value) -> HtmlUtils.htmlEscape(value));
         notifyChannels(event, enabled, emailEnabled, whatsAppEnabled, configuredEmail, configuredWhatsApp,
-                fallbackEmail, fallbackMobile, emailSubject, emailTemplate, whatsAppTemplate, values, htmlValues);
+                fallbackEmail, fallbackMobile, emailSubject, emailTemplate, whatsAppTemplate, whatsAppTemplateName,
+                whatsAppTemplateLanguage, values, htmlValues);
     }
 
     private void notifyChannels(String event, boolean enabled, boolean emailEnabled, boolean whatsAppEnabled,
             String configuredEmail, String configuredWhatsApp, String fallbackEmail, String fallbackMobile,
-            String emailSubject, String emailTemplate, String whatsAppTemplate, Map<String, String> textValues,
+            String emailSubject, String emailTemplate, String whatsAppTemplate, String whatsAppTemplateName,
+            String whatsAppTemplateLanguage, Map<String, String> textValues,
             Map<String, String> htmlValues) {
         if (!enabled) return;
         String emailRecipient = preferred(configuredEmail, fallbackEmail);
@@ -121,9 +133,30 @@ public class RegistrationNotificationService {
             catch (Exception exception) { log.warn("{} email could not be sent to {}", event, emailRecipient, exception); }
         }
         if (whatsAppEnabled && StringUtils.hasText(whatsAppRecipient)) {
-            try { whatsAppService.sendMessage(whatsAppRecipient.replaceAll("\\D", ""), render(whatsAppTemplate, textValues)); }
+            try { whatsAppService.sendTemplate(whatsAppRecipient.replaceAll("\\D", ""), whatsAppTemplateName, whatsAppTemplateLanguage, templateParameters(event, textValues)); }
             catch (Exception exception) { log.warn("{} WhatsApp message could not be sent to {}", event, whatsAppRecipient, exception); }
         }
+    }
+
+    private Map<String, String> templateParameters(String event, Map<String, String> values) {
+        return switch (event) {
+            case "volunteer registration" -> selected(values, "name", "mobile", "district", "taluka");
+            case "dynamic form submission" -> {
+                Map<String, String> parameters = new LinkedHashMap<>();
+                parameters.put("name", safe(values.get("name")));
+                parameters.put("form_title", safe(values.get("formTitle")));
+                parameters.put("details", safe(values.get("details")));
+                yield parameters;
+            }
+            case "mohim registration" -> selected(values, "name", "activity", "date", "location");
+            default -> throw new IllegalArgumentException("Unsupported WhatsApp template notification event: " + event);
+        };
+    }
+
+    private Map<String, String> selected(Map<String, String> values, String... keys) {
+        Map<String, String> selected = new LinkedHashMap<>();
+        for (String key : keys) selected.put(key, safe(values.get(key)));
+        return selected;
     }
 
     private Map<String, String> volunteerValues(Volunteer volunteer) {
